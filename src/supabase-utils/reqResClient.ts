@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
+import { Database } from "../../supabase/supabase";
 
 export const getSupabaseReqresClient = ({
   request,
@@ -10,7 +11,7 @@ export const getSupabaseReqresClient = ({
     value: NextResponse.next({ request: request }),
   };
 
-  const supabase = createServerClient(
+  const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL as string,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string,
     {
