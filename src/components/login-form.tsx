@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRef } from "react";
 import { getSupabaseBrowserClient } from "@/supabase-utils/browserClient";
+import { useRouter } from "next/navigation";
 
 interface LoginFormProps extends React.ComponentPropsWithoutRef<"div"> {
   isPasswordLogin?: boolean;
@@ -26,6 +27,7 @@ export function LoginForm({
   const emailInputRef = useRef<HTMLInputElement | null>(null);
   const passwordInputRef = useRef<HTMLInputElement | null>(null);
   const supabase = getSupabaseBrowserClient();
+  const router = useRouter();
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -49,7 +51,8 @@ export function LoginForm({
                   })
                   .then((result) => {
                     if (result?.data?.user) {
-                      alert(`${result?.data?.user.email} signed in`);
+                      // alert(`${result?.data?.user.email} signed in`);
+                      router.push("/tickets");
                     } else {
                       alert("could not signed in");
                     }
