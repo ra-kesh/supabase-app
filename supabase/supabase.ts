@@ -7,9 +7,111 @@ export type Json =
   | Json[]
 
 export type Database = {
-  public: {
+  graphql_public: {
     Tables: {
       [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          operationName?: string
+          query?: string
+          variables?: Json
+          extensions?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+  public: {
+    Tables: {
+      service_users: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: number
+          supabase_user: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id?: number
+          supabase_user: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: number
+          supabase_user?: string
+        }
+        Relationships: []
+      }
+      tenant_permissions: {
+        Row: {
+          created_at: string
+          id: number
+          service_user: number
+          tenant: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          service_user: number
+          tenant?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          service_user?: number
+          tenant?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_permissions_service_user_fkey"
+            columns: ["service_user"]
+            isOneToOne: false
+            referencedRelation: "service_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tenant_permissions_tenant_fkey"
+            columns: ["tenant"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenants: {
+        Row: {
+          created_at: string
+          domain: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          domain: string
+          id: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          domain?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
