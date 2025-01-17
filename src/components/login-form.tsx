@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +11,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { useRef } from "react";
+import { getSupabaseBrowserClient } from "@/supabase-utils/browserClient";
+import { useRouter } from "next/navigation";
 
 interface LoginFormProps extends React.ComponentPropsWithoutRef<"div"> {
   isPasswordLogin?: boolean;
@@ -20,7 +24,10 @@ export function LoginForm({
   isPasswordLogin,
   ...props
 }: LoginFormProps) {
-  console.log(isPasswordLogin);
+  const emailInputRef = useRef<HTMLInputElement | null>(null);
+  const passwordInputRef = useRef<HTMLInputElement | null>(null);
+  const supabase = getSupabaseBrowserClient();
+  const router = useRouter();
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -32,7 +39,27 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+
+              if (isPasswordLogin) {
+                supabase.auth
+                  .signInWithPassword({
+                    email: emailInputRef.current?.value as string,
+                    password: passwordInputRef.current?.value as string,
+                  })
+                  .then((result) => {
+                    if (result?.data?.user) {
+                      // alert(`${result?.data?.user.email} signed in`);
+                      router.push("/tickets");
+                    } else {
+                      alert("could not signed in");
+                    }
+                  });
+              }
+            }}
+          >
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
@@ -40,6 +67,7 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="m@example.com"
+                  ref={emailInputRef}
                   required
                 />
               </div>
@@ -54,7 +82,12 @@ export function LoginForm({
                       Forgot your password?
                     </a>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input
+                    id="password"
+                    type="password"
+                    ref={passwordInputRef}
+                    required
+                  />
                 </div>
               )}
               <Button type="submit" className="w-full">
