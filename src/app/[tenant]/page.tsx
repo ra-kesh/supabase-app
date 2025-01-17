@@ -1,12 +1,12 @@
-"use client";
-
 import { LoginForm } from "@/components/login-form";
 import React from "react";
 
-type Params = Promise<{ magicLink: string }>;
+type Params = { magicLink: string };
 
-export default function Home({ searchParams }: { searchParams: Params }) {
-  const { magicLink } = React.use(searchParams);
+export default async function Home({ searchParams }: { searchParams: Params }) {
+  // const supabaseAdmin = getSupabaseAdminClient()
+
+  const magicLink = searchParams.magicLink;
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
